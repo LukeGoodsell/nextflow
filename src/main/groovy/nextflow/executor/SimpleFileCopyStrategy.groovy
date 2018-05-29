@@ -20,6 +20,7 @@
 
 package nextflow.executor
 import java.nio.file.Path
+import java.nio.file.Paths
 
 import groovy.transform.CompileStatic
 import groovy.transform.Memoized
@@ -168,8 +169,21 @@ class SimpleFileCopyStrategy implements ScriptFileCopyStrategy {
 
     protected String stageInCommand( String source, String target, String mode ) {
 
-        if( mode == 'symlink' || !mode )
-            return "ln -s ${Escape.path(source)} ${Escape.path(target)}"
+        if( mode == 'symlink' || !mode ) {
+
+            // Symlink from the working directory to the original location.
+            // GNU ln has the '-r' flag, but BSD ln doesn't, so we have to manually
+            // resolve the relative path
+
+            def targetPath = Paths.get(target)
+            if( ! targetPath.isAbsolute() )
+                targetPath = workDir.resolve(targetPath)
+
+            def sourceRelative = targetPath.getParent()
+                .relativize(Paths.get(source)).toString()
+
+            return "ln -s ${Escape.path(sourceRelative)} ${Escape.path(target)}"
+        }
 
         if( mode == 'link' )
             return "ln ${Escape.path(source)} ${Escape.path(target)}"
