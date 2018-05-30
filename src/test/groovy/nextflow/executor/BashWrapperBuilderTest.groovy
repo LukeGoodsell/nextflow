@@ -230,8 +230,6 @@ class BashWrapperBuilderTest extends Specification {
         ] as TaskBean )
         bash.build()
 
-        def rootRelative = folder.relativize(Paths.get("/"))
-        
         then:
         folder.resolve('.command.run').text ==
                 """
@@ -296,8 +294,8 @@ class BashWrapperBuilderTest extends Specification {
                 # stage input files
                 rm -f sample_1.fq
                 rm -f sample_2.fq
-                ln -s ${rootRelative}/some/data/sample_1.fq sample_1.fq
-                ln -s ${rootRelative}/some/data/sample_2.fq sample_2.fq
+                ln -s /some/data/sample_1.fq sample_1.fq
+                ln -s /some/data/sample_2.fq sample_2.fq
 
                 set +e
                 ctmp=\$(set +u; nxf_mktemp /dev/shm 2>/dev/null || nxf_mktemp \$TMPDIR)

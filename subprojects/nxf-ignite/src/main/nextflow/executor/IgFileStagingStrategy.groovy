@@ -89,8 +89,7 @@ class IgFileStagingStrategy implements StagingStrategy {
                 Files.createDirectories(staged.parent)
             }
             log?.debug "Task ${task.name} > staging path: '${source}' to: '$staged'"
-            def cachedRelative = staged.getParent().relativize(cached)
-            Files.createSymbolicLink(staged, cachedRelative)
+            Files.createSymbolicLink(staged, cached)
         }
 
     }
