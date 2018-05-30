@@ -176,11 +176,13 @@ class SimpleFileCopyStrategy implements ScriptFileCopyStrategy {
             // resolve the relative path
 
             def targetPath = Paths.get(target)
-            if( ! targetPath.isAbsolute() )
+            if( ! targetPath.isAbsolute() && workDir != null)
                 targetPath = workDir.resolve(targetPath)
 
-            def sourceRelative = targetPath.getParent()
-                .relativize(Paths.get(source)).toString()
+            def sourceRelative = source
+            if( targetPath.isAbsolute() )
+                sourceRelative = targetPath.getParent()
+                    .relativize(Paths.get(source)).toString()
 
             return "ln -s ${Escape.path(sourceRelative)} ${Escape.path(target)}"
         }

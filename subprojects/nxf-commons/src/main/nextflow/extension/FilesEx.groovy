@@ -1417,8 +1417,7 @@ class FilesEx {
             }
         }
         else {
-            def existingRelative = link.getParent().relativize(existing)
-            Files.createSymbolicLink(link, existingRelative)
+            Files.createSymbolicLink(link, existing)
         }
     }
 
