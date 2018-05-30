@@ -169,7 +169,10 @@ class SimpleFileCopyStrategy implements ScriptFileCopyStrategy {
 
     protected String stageInCommand( String source, String target, String mode ) {
 
-        if( mode == 'symlink' || !mode ) {
+        if( mode == 'symlink' || !mode )
+            return "ln -s ${Escape.path(source)} ${Escape.path(target)}"
+
+        if( mode == 'symlinkRelative' ) {
 
             // Symlink from the working directory to the original location.
             // GNU ln has the '-r' flag, but BSD ln doesn't, so we have to manually
